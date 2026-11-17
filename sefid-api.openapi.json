@@ -1,0 +1,1276 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sefid signed API",
+    "version": "v1",
+    "description": "Server-to-server calls a shop makes to Sefid. Generated from the code; the guide for people is sefid-api.md. Every call is signed (see the guide, section 3). The same paths without the version (/api/ingest/...) are version 1 too."
+  },
+  "servers": [
+    {
+      "url": "https://api.sefid.dev"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sefidSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Sefid-Signature",
+        "description": "HMAC-SHA256 over METHOD, PATH, X-Sefid-Timestamp, X-Sefid-Nonce and the SHA-256 of the body, with the key's secret; sent with X-Sefid-Key, X-Sefid-Timestamp and X-Sefid-Nonce."
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/ingest/products": {
+      "post": {
+        "summary": "Send or update products (up to the plan's limit in one call).",
+        "x-sefid-key-part": "products",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "externalId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        },
+                        "price": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "salePrice": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "inStock": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "stockQty": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "imageUrl": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "productUrl": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "sku": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "shippable": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "description": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "brand": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "categories": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "variations": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "attributes": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "propertyNames": {
+                                          "type": "string"
+                                        },
+                                        "additionalProperties": {}
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "price": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 9007199254740991
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "inStock": {
+                                    "type": [
+                                      "boolean",
+                                      "null"
+                                    ]
+                                  },
+                                  "stockQty": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 9007199254740991
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "imageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "sku": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "externalId": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "externalId",
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "products"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/products/bulk": {
+      "post": {
+        "summary": "Send or update many products at once.",
+        "x-sefid-key-part": "products",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "externalId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        },
+                        "price": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "salePrice": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "inStock": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "stockQty": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "imageUrl": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "productUrl": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "sku": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "shippable": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "description": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "brand": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "categories": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "variations": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "attributes": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "propertyNames": {
+                                          "type": "string"
+                                        },
+                                        "additionalProperties": {}
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "price": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 9007199254740991
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "inStock": {
+                                    "type": [
+                                      "boolean",
+                                      "null"
+                                    ]
+                                  },
+                                  "stockQty": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 9007199254740991
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "imageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "sku": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "externalId": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "externalId",
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "products"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/products/{externalId}": {
+      "delete": {
+        "summary": "Remove one product by your own id.",
+        "x-sefid-key-part": "products",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "externalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/order-status": {
+      "post": {
+        "summary": "Tell Sefid an order's status, so the chat can answer the customer about it.",
+        "x-sefid-key-part": "orders",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "externalOrderId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 120,
+                        "format": "email",
+                        "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "trackingCode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "total": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "qty": {
+                              "anyOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 9007199254740991
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "unitPrice": {
+                              "anyOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "note": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "paid": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "externalOrderId",
+                  "status"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/notify": {
+      "post": {
+        "summary": "Send one message to one customer in their chat.",
+        "x-sefid-key-part": "messages",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 120
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sessionId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "link": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 300
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "title"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/payment-result": {
+      "post": {
+        "summary": "Tell Sefid the result of a payment made on your site.",
+        "x-sefid-key-part": "orders",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "paid",
+                      "failed"
+                    ]
+                  },
+                  "sefidConversation": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sessionId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "link": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 300
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "orderId",
+                  "status"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/product-source": {
+      "post": {
+        "summary": "Choose where products come from: synced to Sefid, or read live from your shop.",
+        "x-sefid-key-part": "products",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "SYNC",
+                      "LIVE"
+                    ]
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/broadcast": {
+      "post": {
+        "summary": "Send an announcement to a group of customers.",
+        "x-sefid-key-part": "messages",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 1000
+                  },
+                  "link": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 300,
+                        "format": "uri"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "audience": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  "sendAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "text",
+                  "audience"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/verify": {
+      "post": {
+        "summary": "Check the connection: the key and the signature are right.",
+        "x-sefid-key-part": "any key of the site",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/status-event": {
+      "post": {
+        "summary": "Report an event of your order-status page.",
+        "x-sefid-key-part": "orders",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sessionId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/status-config/get": {
+      "post": {
+        "summary": "Read your order-status page's settings.",
+        "x-sefid-key-part": "orders",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    },
+    "/api/v1/ingest/status-config": {
+      "post": {
+        "summary": "Change your order-status page's settings.",
+        "x-sefid-key-part": "orders",
+        "security": [
+          {
+            "sefidSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "kinds": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {
+                          "type": "boolean"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A field is missing or wrong; the body lists which."
+          },
+          "401": {
+            "description": "The key or the signature is not valid."
+          },
+          "403": {
+            "description": "This key, or this site, may not call this part."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "2XX": {
+            "description": "Done."
+          }
+        }
+      }
+    }
+  }
+}
